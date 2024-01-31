@@ -22,3 +22,15 @@ resource "azurerm_subnet" "ado-sn" {
   virtual_network_name = azurerm_virtual_network.ado-vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
+
+# Public IP - PIP
+resource "azurerm_public_ip" "ado-pip" {
+  name                = "ado-public-ip"
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+  location            = azurerm_resource_group.ado-2401-rg.location
+  allocation_method   = "Static"
+
+  tags = {
+    env = "dev"
+  }
+}
