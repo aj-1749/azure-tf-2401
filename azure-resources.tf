@@ -34,3 +34,17 @@ resource "azurerm_public_ip" "ado-pip" {
     env = "dev"
   }
 }
+
+# Network Interface - NIC
+resource "azurerm_network_interface" "ado-nic" {
+  name                = "ado-network-card"
+  location            = azurerm_resource_group.ado-2401-rg.location
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+
+  ip_configuration {
+    name                          = "internal"
+    subnet_id                     = azurerm_subnet.ado-sn.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id = azurerm_public_ip.ado-pip.id
+  }
+}
