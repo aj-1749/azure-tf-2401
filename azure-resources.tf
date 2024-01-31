@@ -48,3 +48,34 @@ resource "azurerm_network_interface" "ado-nic" {
     public_ip_address_id = azurerm_public_ip.ado-pip.id
   }
 }
+
+# Virtual Machine
+resource "azurerm_linux_virtual_machine" "ado-vm" {
+  name                = "ado-docker-machine"
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+  location            = azurerm_resource_group.ado-2401-rg.location
+  size                = "Standard_F2"
+  admin_username      = "adminuser"
+  custom_data = filebase64("script.sh")
+  network_interface_ids = [
+    azurerm_network_interface.ado-nic.id,
+  ]
+
+  admin_ssh_key {
+    username   = "adminuser"
+    public_key = file("~/.ssh/id_rsa.pub") 
+    # generate key using command ssh-keygen
+  }
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+    publisher = "Canonical"
+    offer     = "0001-com-ubuntu-server-jammy"
+    sku       = "22_04-lts"
+    version   = "latest"
+  }
+}
