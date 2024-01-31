@@ -15,3 +15,10 @@ resource "azurerm_virtual_network" "ado-vnet" {
   address_space       = ["10.0.0.0/16"]
 }
 
+# Subnet
+resource "azurerm_subnet" "ado-sn" {
+  name                 = "ado-subnet"
+  resource_group_name  = azurerm_resource_group.ado-2401-rg.name
+  virtual_network_name = azurerm_virtual_network.ado-vnet.name
+  address_prefixes     = ["10.0.1.0/24"]
+}
