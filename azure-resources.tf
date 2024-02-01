@@ -131,3 +131,33 @@ resource "azurerm_service_plan" "ado-lms-tf-svcp" {
   sku_name            = "S2"
 }
 
+# Web App Service
+resource "azurerm_linux_web_app" "ado-lms-tf-nodebe" {
+  name                = "ado-lms-tf-be-svc"
+  location            = azurerm_resource_group.ado-2401-rg.location
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+  service_plan_id     = azurerm_service_plan.ado-lms-tf-svcp.id
+
+  site_config {
+    application_stack {
+      docker_image     = "adolmsregistry.azurecr.io/lms-be"
+      docker_image_tag = "latest"
+    }
+  }
+  app_settings = {
+
+    "DOCKER_REGISTRY_SERVER_URL"      = "adolmsregistry.azurecr.io"
+    "DOCKER_REGISTRY_SERVER_USERNAME" = "adolmsregistry"
+    "DOCKER_REGISTRY_SERVER_PASSWORD" = "CY2oivRx5iWG56j7u/wYsFrhhXDcZ31zLiD7vHQ6YG+ACRCxltsT"
+    "PORT"                            = "3000"
+    "MODE"                            = "production"
+    "DB_USER"                         = "admin_user"
+    "DB_HOST"                         = "ado-lms-tf-postgres-db.postgres.database.azure.com"
+    "DB_PORT"                         = "5432"
+    "DB_NAME"                         = "postgres"
+    "DB_PASSWORD"                     = "admin12345"
+
+    "DATABASE_URL" = "postgres://${var.DB_USER}:${var.DB_PASSWORD}@${var.DB_HOST}:${var.DB_PORT}/${var.DB_NAME}"
+  }
+
+}
