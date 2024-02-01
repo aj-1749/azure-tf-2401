@@ -105,3 +105,20 @@ resource "azurerm_postgresql_flexible_server_firewall_rule" "ado-lms-tf-db-fw" {
   start_ip_address = "0.0.0.0"
   end_ip_address   = "255.255.255.255"
 }
+
+# Container Registry
+resource "azurerm_container_registry" "ado-lms-tf-acr" {
+  name                = "adolmsregistry"
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+  location            = azurerm_resource_group.ado-2401-rg.location
+  sku                 = "Standard"
+  admin_enabled       = "true"
+}
+
+# Assign Role for Registry
+resource "azurerm_role_assignment" "ado-tf-acr-access" {
+  principal_id         = "87d20526-05f0-4f11-bf80-9a7e6b448006" # User's Object ID
+  role_definition_name = "Owner"
+  scope                = azurerm_container_registry.ado-lms-tf-acr.id
+}
+
