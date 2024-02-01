@@ -122,3 +122,12 @@ resource "azurerm_role_assignment" "ado-tf-acr-access" {
   scope                = azurerm_container_registry.ado-lms-tf-acr.id
 }
 
+# Service Plan 
+resource "azurerm_service_plan" "ado-lms-tf-svcp" {
+  name                = "adolmstfbe"
+  resource_group_name = azurerm_resource_group.ado-2401-rg.name
+  location            = azurerm_resource_group.ado-2401-rg.location
+  os_type             = "Linux"
+  sku_name            = "S2"
+}
+
