@@ -79,3 +79,29 @@ resource "azurerm_linux_virtual_machine" "ado-vm" {
     version   = "latest"
   }
 }
+
+# Postgres DB Password Variable
+variable "administrator_password" {
+  description = "password for postgres"
+}
+
+# Postgres DB
+resource "azurerm_postgresql_flexible_server" "ado-lms-tf-db" {
+  name                   = "ado-lms-tf-postgres-db"
+  location               = azurerm_resource_group.ado-2401-rg.location
+  resource_group_name    = azurerm_resource_group.ado-2401-rg.name
+  sku_name               = "GP_Standard_D2ds_v4"
+  version                = "13"
+  storage_mb             = 32768
+  administrator_login    = "admin_user"
+  administrator_password = var.administrator_password
+  zone                   = "2"
+}
+
+# Postgres DB Firewall
+resource "azurerm_postgresql_flexible_server_firewall_rule" "ado-lms-tf-db-fw" {
+  name             = "ado-lms-db-firewall"
+  server_id        = azurerm_postgresql_flexible_server.ado-lms-tf-db.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "255.255.255.255"
+}
