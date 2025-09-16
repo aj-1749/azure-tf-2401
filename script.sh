@@ -1,3 +1,5 @@
 #!/bin/bash
-curl -fsSL https://get.docker.com -o install-docker.sh
-sh install-docker.sh
+sudo apt update -y
+sudo apt install -y nginx
+sudo rm -rf /var/www/html/*
+sudo git clone https://github.com/ravi2krishna/ecomm.git /var/www/html/
